@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>School Live · What's Happening</title>
+    <title>School Live · Navigation</title>
     <style>
-        /* RESET & BASE */
         * {
             margin: 0;
             padding: 0;
@@ -17,7 +16,7 @@
             background: #f4f7fc;
             color: #1e2b3c;
             line-height: 1.5;
-            padding: 1rem;
+            padding: 1rem 1rem 80px 1rem; /* bottom padding for nav */
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -27,6 +26,7 @@
             max-width: 800px;
             margin: 0 auto;
             width: 100%;
+            flex: 1;
         }
 
         /* HEADER */
@@ -35,6 +35,464 @@
             align-items: center;
             gap: 0.75rem;
             margin-bottom: 1.5rem;
+            background: white;
+            padding: 1rem 1.25rem;
+            border-radius: 2rem;
+            box-shadow: 0 4px 12px rgba(0,20,40,0.08);
+            border: 1px solid rgba(0,60,120,0.1);
+        }
+
+        .live-badge {
+            background: #dc2626;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.35rem 1rem;
+            border-radius: 30px;
+            box-shadow: 0 2px 6px rgba(220,38,38,0.3);
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .live-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0a2a44;
+        }
+
+        /* VIDEO EMBED (visible only on live feed tab) */
+        .live-video {
+            background: #000;
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            aspect-ratio: 16 / 9;
+            box-shadow: 0 12px 24px -8px rgba(0,0,0,0.2);
+            border: 2px solid white;
+        }
+
+        .live-video iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            background: #1e3a5f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aac8e0;
+            font-size: 1rem;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        /* FEED TITLE */
+        .feed-title {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        .feed-title h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #163a5f;
+        }
+
+        .feed-title span {
+            background: #e6edf5;
+            padding: 0.3rem 0.9rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #2c4c6e;
+        }
+
+        /* UPDATE CARDS (used in live feed) */
+        .update-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.2rem 1.2rem 1rem 1.2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 6px 14px rgba(0,20,40,0.06);
+            border-left: 5px solid #3b82f6;
+            transition: transform 0.1s ease;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .update-card.highlight {
+            border-left-color: #eab308;
+            background: #fffbe6;
+        }
+
+        .update-time {
+            font-size: 0.8rem;
+            color: #5f7d9c;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .update-time i {
+            font-style: normal;
+            background: #eef3f9;
+            padding: 2px 8px;
+            border-radius: 30px;
+        }
+
+        .update-content {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #0b2b44;
+        }
+
+        .update-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: #4b6a88;
+            border-top: 1px dashed #dbe5f0;
+            padding-top: 0.7rem;
+            margin-top: 0.3rem;
+        }
+
+        /* SCHEDULE & EVENTS STYLES */
+        .schedule-item, .event-item {
+            background: white;
+            border-radius: 18px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            border: 1px solid #eef2f6;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .schedule-time, .event-date {
+            background: #e0eaff;
+            color: #1e4a7a;
+            font-weight: 600;
+            padding: 0.5rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .schedule-desc, .event-desc {
+            font-weight: 500;
+        }
+
+        /* BOTTOM NAVIGATION */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #ffffffdd;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid #d9e2ef;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.6rem 0.5rem;
+            box-shadow: 0 -4px 12px rgba(0,20,40,0.04);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+            color: #5d7b9c;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: transparent;
+            border: none;
+            transition: color 0.2s;
+            cursor: pointer;
+            padding: 0.4rem;
+            border-radius: 30px;
+        }
+
+        .nav-item.active {
+            color: #1e4a7a;
+            background: #e5f0ff;
+            font-weight: 600;
+        }
+
+        .nav-item i {
+            font-size: 1.5rem;
+            font-style: normal;
+        }
+
+        /* HIDE CONTENT SECTIONS */
+        .page {
+            display: none;
+        }
+
+        .page.active-page {
+            display: block;
+        }
+
+        .live-status {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: #dee9f4;
+            padding: 0.9rem 1.2rem;
+            border-radius: 50px;
+            margin-top: 1.5rem;
+            color: #1e405e;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #6b89a8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER (same for all pages) -->
+        <div class="live-header">
+            <span class="live-badge">LIVE</span>
+            <h1>🏫 School Central</h1>
+        </div>
+
+        <!-- PAGE: LIVE FEED (default active) -->
+        <div id="live-page" class="page active-page">
+            <!-- Video embed (optional) -->
+            <div class="live-video">
+                <div class="video-placeholder">
+                    <span style="font-size: 2rem;">📡</span>
+                    <span>Live stream area — replace with your embed</span>
+                </div>
+                <!-- <iframe src="https://www.youtube.com/embed/live_stream?channel=YOUR_ID" allowfullscreen></iframe> -->
+            </div>
+
+            <div class="feed-title">
+                <h2>📋 What’s happening now</h2>
+                <span>live</span>
+            </div>
+
+            <div id="feed-container">
+                <!-- dynamic updates injected by JS -->
+            </div>
+
+            <div class="live-status">
+                <span class="dot"></span>
+                <span>Live updates · connected</span>
+                <span style="margin-left: auto;">🔔</span>
+            </div>
+        </div>
+
+        <!-- PAGE: SCHEDULE -->
+        <div id="schedule-page" class="page">
+            <div class="feed-title">
+                <h2>📅 Today's Schedule</h2>
+                <span>updated hourly</span>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">8:30 AM</span>
+                <span class="schedule-desc">Homeroom / Morning announcements</span>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">9:00 AM</span>
+                <span class="schedule-desc">Math (Grades 7-8) · Room 204</span>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">10:15 AM</span>
+                <span class="schedule-desc">Science Lab · Chemistry</span>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">11:30 AM</span>
+                <span class="schedule-desc">Lunch (Grill special: pizza)</span>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">12:30 PM</span>
+                <span class="schedule-desc">English / Library reading</span>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">2:00 PM</span>
+                <span class="schedule-desc">Sports: Basketball practice</span>
+            </div>
+            <div class="live-status" style="margin-top:2rem;">
+                <span>⏰ Full schedule on website</span>
+            </div>
+        </div>
+
+        <!-- PAGE: EVENTS -->
+        <div id="events-page" class="page">
+            <div class="feed-title">
+                <h2>🎉 Upcoming Events</h2>
+                <span>this week</span>
+            </div>
+            <div class="event-item">
+                <span class="event-date">TOMORROW</span>
+                <span class="event-desc">Spring Concert · 7PM in auditorium</span>
+            </div>
+            <div class="event-item">
+                <span class="event-date">FRIDAY</span>
+                <span class="event-desc">Career Day · guest speakers all day</span>
+            </div>
+            <div class="event-item">
+                <span class="event-date">SAT</span>
+                <span class="event-desc">PTA Fun Run & Carnival</span>
+            </div>
+            <div class="event-item">
+                <span class="event-date">NEXT WEEK</span>
+                <span class="event-desc">Book Fair in library</span>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            ⚡ Tap bottom icons to navigate
+        </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION -->
+    <div class="bottom-nav">
+        <button class="nav-item active" id="nav-live" data-page="live">
+            <i>📡</i>
+            <span>Live</span>
+        </button>
+        <button class="nav-item" id="nav-schedule" data-page="schedule">
+            <i>📅</i>
+            <span>Schedule</span>
+        </button>
+        <button class="nav-item" id="nav-events" data-page="events">
+            <i>🎉</i>
+            <span>Events</span>
+        </button>
+    </div>
+
+    <script>
+        (function() {
+            // ----- PAGE NAVIGATION -----
+            const pages = {
+                live: document.getElementById('live-page'),
+                schedule: document.getElementById('schedule-page'),
+                events: document.getElementById('events-page')
+            };
+
+            const navButtons = {
+                live: document.getElementById('nav-live'),
+                schedule: document.getElementById('nav-schedule'),
+                events: document.getElementById('nav-events')
+            };
+
+            function switchPage(pageId) {
+                // Hide all pages
+                Object.values(pages).forEach(p => p.classList.remove('active-page'));
+                // Show selected page
+                pages[pageId].classList.add('active-page');
+                // Update nav active state
+                Object.values(navButtons).forEach(btn => btn.classList.remove('active'));
+                navButtons[pageId].classList.add('active');
+            }
+
+            // Add click listeners
+            navButtons.live.addEventListener('click', () => switchPage('live'));
+            navButtons.schedule.addEventListener('click', () => switchPage('schedule'));
+            navButtons.events.addEventListener('click', () => switchPage('events'));
+
+            // ----- LIVE FEED DYNAMIC UPDATES (only for live page) -----
+            const feedContainer = document.getElementById('feed-container');
+
+            const sampleUpdates = [
+                { time: '2 min ago', content: '🏀 Basketball game vs. Westside – halftime 34–28', category: 'sports', highlight: true },
+                { time: '15 min ago', content: '🎭 Drama club rehearsal in auditorium', category: 'arts' },
+                { time: '32 min ago', content: '🍎 Free apples in cafeteria – while they last!', category: 'lunch' },
+                { time: '1 hour ago', content: '📢 Parent-teacher conferences signup', category: 'announcement' },
+                { time: '2 hours ago', content: '🚌 Bus #7 delay – approx 10 min', category: 'alert' }
+            ];
+
+            function renderUpdates(updates) {
+                let html = '';
+                updates.forEach(upd => {
+                    const highlightClass = upd.highlight ? 'highlight' : '';
+                    let emoji = '📌';
+                    if (upd.category === 'sports') emoji = '⚽';
+                    else if (upd.category === 'arts') emoji = '🎭';
+                    else if (upd.category === 'lunch') emoji = '🍽️';
+                    else if (upd.category === 'alert') emoji = '⚠️';
+                    
+                    html += `
+                        <div class="update-card ${highlightClass}">
+                            <div class="update-time">
+                                <i>${upd.time}</i>
+                                <span style="margin-left: auto;">${emoji}</span>
+                            </div>
+                            <div class="update-content">${upd.content}</div>
+                            <div class="update-meta">
+                                <span>👀 ${Math.floor(Math.random() * 40) + 10} views</span>
+                                <span>💬 ${Math.floor(Math.random() * 8)} comments</span>
+                                <span>📍 campus</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                feedContainer.innerHTML = html;
+            }
+
+            renderUpdates(sampleUpdates);
+
+            // Simulate new live updates every 12 seconds (only visible on live page)
+            let counter = 0;
+            setInterval(() => {
+                counter++;
+                const newUpdate = {
+                    time: 'just now',
+                    content: `📡 Live: ${counter % 2 === 0 ? 'Science fair winners announced' : 'Jazz band in quad 🎷'}`,
+                    category: counter % 2 === 0 ? 'announcement' : 'arts',
+                    highlight: true,
+                };
+                const currentUpdates = [newUpdate, ...sampleUpdates.slice(0, 4)];
+                renderUpdates(currentUpdates);
+
+                // Update the "live" badge in feed title (only if on live page, but it's fine)
+                const badgeSpan = document.querySelector('.feed-title span');
+                if (badgeSpan) {
+                    badgeSpan.textContent = 'updated now';
+                    setTimeout(() => { badgeSpan.textContent = 'live'; }, 2000);
+                }
+            }, 12000);
+        })();
+    </script>
+</body>
+</html>            margin-bottom: 1.5rem;
             background: white;
             padding: 1rem 1.25rem;
             border-radius: 2rem;
