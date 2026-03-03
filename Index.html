@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>School Live · What's Happening</title>
+    <style>
+        /* RESET & BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+            color: #1e2b3c;
+            line-height: 1.5;
+            padding: 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* HEADER */
+        .live-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            background: white;
+            padding: 1rem 1.25rem;
+            border-radius: 2rem;
+            box-shadow: 0 4px 12px rgba(0,20,40,0.08);
+            border: 1px solid rgba(0,60,120,0.1);
+        }
+
+        .live-badge {
+            background: #dc2626;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.35rem 1rem;
+            border-radius: 30px;
+            box-shadow: 0 2px 6px rgba(220,38,38,0.3);
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .live-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0a2a44;
+        }
+
+        /* VIDEO EMBED SECTION (optional) */
+        .live-video {
+            background: #000;
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            aspect-ratio: 16 / 9;
+            box-shadow: 0 12px 24px -8px rgba(0,0,0,0.2);
+            border: 2px solid white;
+        }
+
+        .live-video iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            background: #1e3a5f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aac8e0;
+            font-size: 1rem;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        /* UPDATES FEED */
+        .feed-title {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        .feed-title h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #163a5f;
+        }
+
+        .feed-title span {
+            background: #e6edf5;
+            padding: 0.3rem 0.9rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #2c4c6e;
+        }
+
+        .update-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.2rem 1.2rem 1rem 1.2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 6px 14px rgba(0,20,40,0.06);
+            border-left: 5px solid #3b82f6;
+            transition: transform 0.1s ease;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .update-card.highlight {
+            border-left-color: #eab308;
+            background: #fffbe6;
+        }
+
+        .update-time {
+            font-size: 0.8rem;
+            color: #5f7d9c;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .update-time i {
+            font-style: normal;
+            background: #eef3f9;
+            padding: 2px 8px;
+            border-radius: 30px;
+        }
+
+        .update-content {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #0b2b44;
+        }
+
+        .update-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: #4b6a88;
+            border-top: 1px dashed #dbe5f0;
+            padding-top: 0.7rem;
+            margin-top: 0.3rem;
+        }
+
+        /* STATUS / FOOTER */
+        .live-status {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: #dee9f4;
+            padding: 0.9rem 1.2rem;
+            border-radius: 50px;
+            margin-top: 1.5rem;
+            color: #1e405e;
+            font-weight: 500;
+            font-size: 0.95rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #6b89a8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- LIVE HEADER -->
+        <div class="live-header">
+            <span class="live-badge">LIVE</span>
+            <h1>🏫 School Central</h1>
+        </div>
+
+        <!-- OPTIONAL: EMBED A YOUTUBE LIVE STREAM (replace with your own link) -->
+        <div class="live-video">
+            <!-- 
+                To embed a real YouTube live stream, replace the src inside the iframe.
+                For example: 
+                <iframe src="https://www.youtube.com/embed/live_stream?channel=UCXXXXX" allowfullscreen></iframe>
+            -->
+            <div class="video-placeholder">
+                <span style="font-size: 2rem;">📡</span>
+                <span>Live stream area — replace with your embed code</span>
+                <span style="font-size: 0.8rem;">(or delete this block)</span>
+            </div>
+            <!-- Uncomment below to use actual embed -->
+            <!-- <iframe src="https://www.youtube.com/embed/live_stream?channel=YOUR_CHANNEL_ID" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
+        </div>
+
+        <!-- RECENT UPDATES TITLE -->
+        <div class="feed-title">
+            <h2>📋 What’s happening now</h2>
+            <span>just now</span>
+        </div>
+
+        <!-- DYNAMIC FEED WILL BE INSERTED HERE BY JAVASCRIPT -->
+        <div id="feed-container">
+            <!-- updates go here -->
+        </div>
+
+        <!-- LIVE CONNECTION STATUS -->
+        <div class="live-status">
+            <span class="dot"></span>
+            <span>Live updates · connected</span>
+            <span style="margin-left: auto; font-size: 0.8rem;">🔔 push enabled</span>
+        </div>
+
+        <div class="footer-note">
+            ⚡ Fresh from campus · updated every few seconds (demo)
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            "use strict";
+
+            // ----- MOCK DATA (pretend these are live feeds from a school) -----
+            // In a real implementation, you could fetch this from a Google Sheet, a database, or an RSS feed.
+            // For now, we'll simulate a live feed that updates itself.
+            
+            const feedContainer = document.getElementById('feed-container');
+
+            // Sample initial updates
+            const sampleUpdates = [
+                {
+                    time: '2 min ago',
+                    content: '🏀 Basketball game vs. Westside – halftime score 34–28',
+                    category: 'sports',
+                    highlight: true,
+                },
+                {
+                    time: '15 min ago',
+                    content: '🎭 Drama club rehearsal in auditorium (until 4:30pm)',
+                    category: 'arts',
+                },
+                {
+                    time: '32 min ago',
+                    content: '🍎 Free apples in cafeteria – while they last!',
+                    category: 'lunch',
+                },
+                {
+                    time: '1 hour ago',
+                    content: '📢 Parent-teacher conferences: next week signup link in email',
+                    category: 'announcement',
+                },
+                {
+                    time: '2 hours ago',
+                    content: '🚌 Bus #7 delay – approx 10 min',
+                    category: 'alert',
+                }
+            ];
+
+            // Function to render an array of updates to the container
+            function renderUpdates(updates) {
+                let htmlString = '';
+                for (let upd of updates) {
+                    // choose card modifier
+                    const highlightClass = upd.highlight ? 'highlight' : '';
+                    // optional emoji per category (just for fun)
+                    let categoryEmoji = '📌';
+                    if (upd.category === 'sports') categoryEmoji = '⚽';
+                    else if (upd.category === 'arts') categoryEmoji = '🎭';
+                    else if (upd.category === 'lunch') categoryEmoji = '🍽️';
+                    else if (upd.category === 'alert') categoryEmoji = '⚠️';
+                    
+                    htmlString += `
+                        <div class="update-card ${highlightClass}">
+                            <div class="update-time">
+                                <i>${upd.time}</i>
+                                <span style="margin-left: auto;">${categoryEmoji}</span>
+                            </div>
+                            <div class="update-content">${upd.content}</div>
+                            <div class="update-meta">
+                                <span>👀 ${Math.floor(Math.random() * 40) + 10} views</span>
+                                <span>💬 ${Math.floor(Math.random() * 8)} comments</span>
+                                <span>📍 campus</span>
+                            </div>
+                        </div>
+                    `;
+                }
+                feedContainer.innerHTML = htmlString;
+            }
+
+            // initial render
+            renderUpdates(sampleUpdates);
+
+            // Simulate a new live update arriving every 12 seconds
+            // (this mimics a real-time feed – in production you'd use websockets or periodic fetch)
+            let counter = 0;
+            setInterval(() => {
+                counter++;
+                const newUpdate = {
+                    time: 'just now',
+                    content: `📡 Live: ${counter % 2 === 0 ? 'Science fair winners announced in library' : 'Jazz band playing in quad 🎷'}`,
+                    category: counter % 2 === 0 ? 'announcement' : 'arts',
+                    highlight: true,
+                };
+                // Add to the top of the list (most recent first), remove the last item to keep length manageable
+                const currentUpdates = [newUpdate, ...sampleUpdates.slice(0, 4)];  // keep at most 5
+                renderUpdates(currentUpdates);
+                // Also update the "just now" badge for fun
+                const badgeSpan = document.querySelector('.feed-title span');
+                if (badgeSpan) {
+                    badgeSpan.textContent = 'updated now';
+                    setTimeout(() => { badgeSpan.textContent = 'live'; }, 2000);
+                }
+            }, 12000);  // every 12 seconds
+
+            // You could also fetch real data from an API like:
+            // fetch('https://your-school-data.example.com/live.json')
+            //   .then(response => response.json())
+            //   .then(data => renderUpdates(data))
+            //   .catch(err => console.warn('Using fallback data', err));
+        })();
+    </script>
+</body>
+  </html>
